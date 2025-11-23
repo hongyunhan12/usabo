@@ -38,8 +38,10 @@ env/
 .env
 .env.local
 
-# Test files and debug scripts
-test_*.py
+# Test files and debug scripts (but NOT test_ui_app.py - it's the main app!)
+test_extraction.py
+test_matching.py
+test_excel_matching.py
 debug_*.py
 check_*.py
 *_test.py
