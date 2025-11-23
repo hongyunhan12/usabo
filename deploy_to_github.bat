@@ -38,7 +38,7 @@ pause >nul
 echo.
 set /p REPO_URL="Enter your GitHub repository URL (e.g., https://github.com/YOUR_USERNAME/usabo.git): "
 
-if "%REO_URL%"=="" (
+if "%REPO_URL%"=="" (
     echo Error: Repository URL is required.
     exit /b 1
 )
