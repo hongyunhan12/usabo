@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answers Submitted</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            max-width: 600px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .success-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .message {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .file-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .file-info strong {
+            color: #667eea;
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-icon">✅</div>
+        <h1>Answers Submitted Successfully!</h1>
+        
+        {% if score_data %}
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+            <h2 style="margin: 0 0 15px 0; font-size: 28px;">Your Score: {{ score_data.score_percentage }}%</h2>
+            <div style="display: flex; justify-content: space-around; margin-top: 15px;">
+                <div>
+                    <div style="font-size: 24px; font-weight: bold;">{{ score_data.correct }}</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Correct</div>
+                </div>
+                <div>
+                    <div style="font-size: 24px; font-weight: bold;">{{ score_data.incorrect }}</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Incorrect</div>
+                </div>
+                <div>
+                    <div style="font-size: 24px; font-weight: bold;">{{ score_data.unanswered }}</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Unanswered</div>
+                </div>
+                <div>
+                    <div style="font-size: 24px; font-weight: bold;">{{ score_data.total }}</div>
+                    <div style="font-size: 14px; opacity: 0.9;">Total</div>
+                </div>
+            </div>
+        </div>
+        {% elif key_found %}
+        <p class="message" style="color: #856404; background: #fff3cd; padding: 15px; border-radius: 8px;">
+            Answer key file found but could not extract answers. Please check the key file format.
+        </p>
+        {% else %}
+        <p class="message" style="color: #0c5460; background: #d1ecf1; padding: 15px; border-radius: 8px;">
+            No answer key file found. Answers saved but not scored.
+        </p>
+        {% endif %}
+        
+        <p class="message">
+            Your answers have been saved successfully.
+        </p>
+        
+        <div class="file-info">
+            <p><strong>PDF:</strong> {{ pdf_name }}</p>
+            <p><strong>Answer File:</strong> {{ answer_file }}</p>
+            <p><strong>Saved to:</strong> {{ answer_path }}</p>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <a href="/" class="back-btn" style="margin-right: 10px;">Back to Test List</a>
+            {% if answer_file %}
+            <a href="/results/{{ answer_file }}" class="back-btn" style="background: #28a745;">View Detailed Results</a>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+

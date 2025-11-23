@@ -1,0 +1,72 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment variables
+.env
+.env.local
+
+# Test files and debug scripts
+test_*.py
+debug_*.py
+check_*.py
+*_test.py
+
+# User data directories (should not be committed)
+# These contain user-specific test files and answers
+# C:\Users\nieli\Documents\USABO\Test/
+# C:\Users\nieli\Documents\USABO\Key/
+# C:\Users\nieli\Documents\USABO\UserAnswer/
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+~$*
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Excel temporary files
+~$*.xlsx
+~$*.xls
+
+# HTML results (user-generated)
+*_answers.html
+*_answer_key.html
