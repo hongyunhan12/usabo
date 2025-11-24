@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中文单词卡片 - Chinese Flashcard App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .block-selector {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .block-selector label {
+            color: white;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .block-selector select {
+            background: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            color: #667eea;
+            min-width: 200px;
+            outline: none;
+        }
+
+        .block-selector select:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .block-info {
+            color: rgba(255,255,255,0.9);
+            font-size: 0.95em;
+            margin-top: 5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .flashcard-container {
+            perspective: 1000px;
+            margin-bottom: 30px;
+            height: 400px;
+        }
+
+        .flashcard {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front,
+        .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .flashcard-front {
+            background: linear-gradient(135deg, #ffffff 0%, #f5f7fa 100%);
+            color: #333;
+        }
+
+        .flashcard-back {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .word {
+            font-size: 5em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .pronunciation {
+            font-size: 2em;
+            margin-bottom: 20px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 500;
+        }
+
+        .meaning {
+            font-size: 1.5em;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.95);
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            color: #667eea;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .card-counter {
+            color: white;
+            font-size: 1.2em;
+            margin-top: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .loading {
+            color: white;
+            font-size: 1.5em;
+            margin-top: 50px;
+        }
+
+        .error {
+            color: #ff6b6b;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px;
+            font-size: 1.1em;
+        }
+
+        .hint {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9em;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .word {
+                font-size: 3em;
+            }
+            .pronunciation {
+                font-size: 1.5em;
+            }
+            .meaning {
+                font-size: 1.2em;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>中文单词卡片</h1>
+        
+        <div id="loading" class="loading">正在加载卡片...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        
+        <div id="flashcard-section" style="display: none;">
+            <div class="block-selector">
+                <label for="block-select">选择单词块:</label>
+                <select id="block-select" onchange="changeBlock()">
+                    <option value="all">全部单词</option>
+                </select>
+                <div class="block-info" id="block-info"></div>
+            </div>
+            
+            <div class="flashcard-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="flashcard-front">
+                        <div class="word" id="word">加载中...</div>
+                        <div class="hint">点击卡片翻转</div>
+                    </div>
+                    <div class="flashcard-back">
+                        <div class="pronunciation" id="pronunciation"></div>
+                        <div class="meaning" id="meaning"></div>
+                        <div class="hint">点击卡片翻转</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="prev-btn" onclick="previousCard()">← 上一张</button>
+                <button id="flip-btn" onclick="flipCard()">翻转</button>
+                <button id="next-btn" onclick="nextCard()">下一张 →</button>
+            </div>
+            
+            <div class="card-counter">
+                <span id="card-number">1</span> / <span id="total-cards">0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allFlashcards = [];  // Store all flashcards
+        let flashcards = [];     // Current filtered flashcards
+        let currentIndex = 0;
+        let isFlipped = false;
+        let currentBlock = 'all';
+        let totalBlocks = 0;
+
+        // Load flashcards when page loads
+        async function loadFlashcards() {
+            try {
+                const response = await fetch('/api/flashcards');
+                const data = await response.json();
+                
+                if (data.flashcards && data.flashcards.length > 0) {
+                    allFlashcards = data.flashcards;
+                    flashcards = allFlashcards;
+                    totalBlocks = data.total_blocks || Math.ceil(allFlashcards.length / 100);
+                    
+                    // Populate block dropdown
+                    populateBlockDropdown();
+                    
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('flashcard-section').style.display = 'block';
+                    document.getElementById('total-cards').textContent = flashcards.length;
+                    updateBlockInfo();
+                    showCard(0);
+                } else {
+                    showError('没有找到卡片数据');
+                }
+            } catch (error) {
+                showError('加载卡片失败: ' + error.message);
+            }
+        }
+
+        function populateBlockDropdown() {
+            const select = document.getElementById('block-select');
+            // Keep "全部单词" option, add block options
+            for (let i = 1; i <= totalBlocks; i++) {
+                const start = (i - 1) * 100 + 1;
+                const end = Math.min(i * 100, allFlashcards.length);
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = `块 ${i}: 单词 ${start}-${end}`;
+                select.appendChild(option);
+            }
+        }
+
+        function changeBlock() {
+            const select = document.getElementById('block-select');
+            const selectedValue = select.value;
+            currentBlock = selectedValue;
+            
+            if (selectedValue === 'all') {
+                flashcards = allFlashcards;
+            } else {
+                const blockNum = parseInt(selectedValue);
+                const startIdx = (blockNum - 1) * 100;
+                const endIdx = Math.min(startIdx + 100, allFlashcards.length);
+                flashcards = allFlashcards.slice(startIdx, endIdx);
+            }
+            
+            currentIndex = 0;
+            updateBlockInfo();
+            document.getElementById('total-cards').textContent = flashcards.length;
+            showCard(0);
+        }
+
+        function updateBlockInfo() {
+            const blockInfo = document.getElementById('block-info');
+            if (currentBlock === 'all') {
+                blockInfo.textContent = `总共 ${allFlashcards.length} 个单词，${totalBlocks} 个块`;
+            } else {
+                const blockNum = parseInt(currentBlock);
+                const start = (blockNum - 1) * 100 + 1;
+                const end = Math.min(blockNum * 100, allFlashcards.length);
+                blockInfo.textContent = `当前块: ${start}-${end} (共 ${flashcards.length} 个单词)`;
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error').textContent = message;
+        }
+
+        function showCard(index) {
+            if (index < 0 || index >= flashcards.length) return;
+            
+            currentIndex = index;
+            const card = flashcards[index];
+            
+            // Reset flip state
+            isFlipped = false;
+            document.getElementById('flashcard').classList.remove('flipped');
+            
+            // Update card content
+            document.getElementById('word').textContent = card.word;
+            document.getElementById('pronunciation').textContent = card.pronunciation || '无拼音';
+            document.getElementById('meaning').textContent = card.meaning || '无释义';
+            
+            // Update card counter
+            if (currentBlock === 'all') {
+                document.getElementById('card-number').textContent = index + 1;
+            } else {
+                const blockNum = parseInt(currentBlock);
+                const globalIndex = (blockNum - 1) * 100 + index;
+                document.getElementById('card-number').textContent = `${index + 1} (全局: ${globalIndex + 1})`;
+            }
+            
+            // Update button states
+            document.getElementById('prev-btn').disabled = index === 0;
+            document.getElementById('next-btn').disabled = index === flashcards.length - 1;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            document.getElementById('flashcard').classList.toggle('flipped');
+        }
+
+        function nextCard() {
+            if (currentIndex < flashcards.length - 1) {
+                showCard(currentIndex + 1);
+            }
+        }
+
+        function previousCard() {
+            if (currentIndex > 0) {
+                showCard(currentIndex - 1);
+            }
+        }
+
+        // Add click event to flashcard
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('flashcard').addEventListener('click', flipCard);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    previousCard();
+                } else if (e.key === 'ArrowRight') {
+                    nextCard();
+                } else if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    flipCard();
+                }
+            });
+            
+            // Load flashcards
+            loadFlashcards();
+        });
+    </script>
+</body>
+</html>
+

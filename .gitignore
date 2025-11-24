@@ -4,71 +4,28 @@ __pycache__/
 *$py.class
 *.so
 .Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual Environment
+env/
 venv/
 ENV/
-env/
 .venv
+
+# Environment variables
+.env
+.env.local
 
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
-*~
+
+# OS
 .DS_Store
+Thumbs.db
 
-# Environment variables
-.env
-.env.local
-
-# Test files and debug scripts (but NOT test_ui_app.py - it's the main app!)
-test_extraction.py
-test_matching.py
-test_excel_matching.py
-debug_*.py
-check_*.py
-*_test.py
-
-# User data directories (should not be committed)
-# These contain user-specific test files and answers
-# C:\Users\nieli\Documents\USABO\Test/
-# C:\Users\nieli\Documents\USABO\Key/
-# C:\Users\nieli\Documents\USABO\UserAnswer/
+# Excel files (optional - remove if you want to commit)
+# *.xlsx
+# *.xls
 
 # Logs
 *.log
-
-# Temporary files
-*.tmp
-*.bak
-*.swp
-~$*
-
-# OS files
-Thumbs.db
-.DS_Store
-
-# Excel temporary files
-~$*.xlsx
-~$*.xls
-
-# HTML results (user-generated)
-*_answers.html
-*_answer_key.html
